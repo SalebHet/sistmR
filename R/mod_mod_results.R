@@ -54,6 +54,8 @@ mod_mod_results_server <- function(id,dataDF,parent){
     })
 
     observeEvent(parent$plotButton,{
+      updateTabsetPanel(session = session, "tabPanel",
+                        selected = "Graph")
       if(parent$plot == "BlandAltman"){
         colo <- c(parent$col1,parent$col2,parent$col3)
         plotRes <<- sistmr::BlandAltmanPlot(dataDF[,parent$var1],dataDF[,parent$var2],with_gradient = parent$gradient,
@@ -62,8 +64,14 @@ mod_mod_results_server <- function(id,dataDF,parent){
         shinyjs::show(id = "downloadPlot")
       }
       if(parent$plot == "MultipleBoxPlots"){
+        cat("color: ")
+        cat(parent$color,"\n")
+        cat("fill: ")
+        cat(parent$fill,"\n")
+        cat("shape: ")
+        cat(parent$shape,"\n")
         dataDF[,parent$var1Box] <<- factor(dataDF[,parent$var1Box],unique(dataDF[,parent$var1Box]))
-        plotRes <<- sistmr::multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points)
+        plotRes <<- sistmr::multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
         output$result <- renderPlot(plotRes +
                                       ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
                                       ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
