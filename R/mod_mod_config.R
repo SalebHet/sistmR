@@ -9,7 +9,7 @@
 #' @importFrom shiny NS tagList
 #' @import colourpicker
 #' @import shinyjs
-#' @import shinywidget
+#' @import shinyWidgets
 mod_mod_config_ui <- function(id){
   library(colourpicker)
   ns <- NS(id)
@@ -21,7 +21,8 @@ mod_mod_config_ui <- function(id){
                  choices = c(BlandAltman = "BlandAltman",
                              MultipleBoxPlots = "MultipleBoxPlots",
                              Normal_Distribution = "Normal_Distribution",
-                            VolcanoPlot = "VolcanoPlot"),
+                            VolcanoPlot = "VolcanoPlot",
+                            barplot = "barplot"),
                  selected = "BlandAltman"),
 
     conditionalPanel(condition = "input$plot == BlandAltman",
@@ -106,48 +107,9 @@ mod_mod_config_ui <- function(id){
                                               "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
                                               "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
                     selected = "Set1",
-                    choicesOpt = list(content = c(sprintf("<img src='./palette/blues.png' width=30px><div class='jhr'>%s</div></img>", "Blues"),
-                                                  sprintf("<img src='./palette/BuGn.png' width=30px><div class='jhr'>%s</div></img>", "BuGn"),
-                                                  sprintf("<img src='./palette/BuPu.png' width=30px><div class='jhr'>%s</div></img>", "BuPu"),
-                                                  sprintf("<img src='./palette/GnBu.png' width=30px><div class='jhr'>%s</div></img>", "GnBu"),
-                                                  sprintf("<img src='./palette/Greens.png' width=30px><div class='jhr'>%s</div></img>", "Greens"),
-                                                  sprintf("<img src='./palette/Greys.png' width=30px><div class='jhr'>%s</div></img>", "Greys"),
-                                                  sprintf("<img src='./palette/Oranges.png' width=30px><div class='jhr'>%s</div></img>", "Oranges"),
-                                                  sprintf("<img src='./palette/OrRd.png' width=30px><div class='jhr'>%s</div></img>", "OrRd"),
-                                                  sprintf("<img src='./palette/PuBu.png' width=30px><div class='jhr'>%s</div></img>", "PuBu"),
-                                                  sprintf("<img src='./palette/PuBuGn.png' width=30px><div class='jhr'>%s</div></img>", "PuBuGn"),
-                                                  sprintf("<img src='./palette/PuRd.png' width=30px><div class='jhr'>%s</div></img>", "PuRd"),
-                                                  sprintf("<img src='./palette/Purples.png' width=30px><div class='jhr'>%s</div></img>", "Purples"),
-                                                  sprintf("<img src='./palette/RdPu.png' width=30px><div class='jhr'>%s</div></img>", "RdPu"),
-                                                  sprintf("<img src='./palette/Reds.png' width=30px><div class='jhr'>%s</div></img>", "Reds"),
-                                                  sprintf("<img src='./palette/YlGn.png' width=30px><div class='jhr'>%s</div></img>", "YlGn"),
-                                                  sprintf("<img src='./palette/YlGnBu.png' width=30px><div class='jhr'>%s</div></img>", "YlGnBu"),
-                                                  sprintf("<img src='./palette/YlOrBr.png' width=30px><div class='jhr'>%s</div></img>", "YlOrBr"),
-                                                  sprintf("<img src='./palette/YlOrRd.png' width=30px><div class='jhr'>%s</div></img>", "YlOrRd"),
-                                                  sprintf("<img src='./palette/BrBG.png' width=30px><div class='jhr'>%s</div></img>", "BrBG"),
-                                                  sprintf("<img src='./palette/PiYG.png' width=30px><div class='jhr'>%s</div></img>", "PiYG"),
-                                                  sprintf("<img src='./palette/PRGn.png' width=30px><div class='jhr'>%s</div></img>", "PRGn"),
-                                                  sprintf("<img src='./palette/PuOr.png' width=30px><div class='jhr'>%s</div></img>", "PuOr"),
-                                                  sprintf("<img src='./palette/RdBu.png' width=30px><div class='jhr'>%s</div></img>", "RdBu"),
-                                                  sprintf("<img src='./palette/RdGy.png' width=30px><div class='jhr'>%s</div></img>", "RdGy"),
-                                                  sprintf("<img src='./palette/RdYlBu.png' width=30px><div class='jhr'>%s</div></img>", "RdYlBu"),
-                                                  sprintf("<img src='./palette/RdYlGn.png' width=30px><div class='jhr'>%s</div></img>", "RdYlGn"),
-                                                  sprintf("<img src='./palette/Spectral.png' width=30px><div class='jhr'>%s</div></img>", "Spectral"),
-                                                  sprintf("<img src='./palette/Set3.png' width=30px><div class='jhr'>%s</div></img>", "Set3"),
-                                                  sprintf("<img src='./palette/Set2.png' width=30px><div class='jhr'>%s</div></img>", "Set2"),
-                                                  sprintf("<img src='./palette/Set1.png' width=30px><div class='jhr'>%s</div></img>", "Set1"),
-                                                  sprintf("<img src='./palette/Pastel2.png' width=30px><div class='jhr'>%s</div></img>", "Pastel2"),
-                                                  sprintf("<img src='./palette/Pastel1.png' width=30px><div class='jhr'>%s</div></img>", "Pastel1"),
-                                                  sprintf("<img src='./palette/Paired.png' width=30px><div class='jhr'>%s</div></img>", "Paired"),
-                                                  sprintf("<img src='./palette/Dark2.png' width=30px><div class='jhr'>%s</div></img>", "Dark2"),
-                                                  sprintf("<img src='./palette/Accent.png' width=30px><div class='jhr'>%s</div></img>", "Accent")
-                                                  #sprintf("<img src='https://d9np3dj86nsu2.cloudfront.net/image/eaf97ff8dcbc7514d1c1cf055f2582ad' width=30px><div class='jhr'>%s</div></img>", "pal1"),
-                                                  # sprintf("<img src='https://www.color-hex.com/palettes/33187.png' width=30px><div class='jhr'>%s</div></img>", "pal2"),
-                                                  # sprintf("<img src='https://www.color-hex.com/palettes/16042.png' width=30px><div class='jhr'>%s</div></img>", "pal3"),
-                                                  # sprintf("<img src='https://www.stlawrencegallery.com/wp-content/uploads/2018/09/unique-navy-blue-color-palette-five-stunning-palettes-for-weddings-dark.jpg' width=30px><div class='jhr'>%s</div></img>", "pal4"))#df$img))
+                    choicesOpt = listHTML()
 
-      )))
-    ),
+      )),
     conditionalPanel(condition = "input$plot == Normal_Distribution",
                      selectizeInput(ns("vecNorm"),label = "Vector",
                                     choices = c(Choose = "", NULL),
@@ -163,7 +125,32 @@ mod_mod_config_ui <- function(id){
                                     choices = c(Choose = "", NULL),
                                     options = list(placeholder = 'Please select a column name below'))
     ),
+    conditionalPanel(condition = "input$plot == barplot",
+                     selectizeInput(ns("varxBar"),label = "x Var",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == barplot",
+                     selectizeInput(ns("varyBar"),label = "y Var",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == barplot",
+                     selectizeInput(ns("varGroupBar"),label = "Group",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == barplot",
+                     pickerInput(inputId = ns("colorBar"),
+                                 label = "pickerInput Palettes",
+                                 choices = listPal <- list("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd","PuBu",
+                                                           "PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd",
+                                                           "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
+                                                           "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
+                                 selected = "Set1",
+                                 choicesOpt = listHTML()
 
+                     )),
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -200,6 +187,12 @@ mod_mod_config_server <- function(id,dataDF){
       if(input$plot != "VolcanoPlot"){
         shinyjs::hide(id = "log2FC")
         shinyjs::hide(id = "pval")
+      }
+      if(input$plot != "barplot"){
+        shinyjs::hide(id = "varxPlot")
+        shinyjs::hide(id = "varyPlot")
+        shinyjs::hide(id = "varGroupPlot")
+        shinyjs::hide(id = "colorBar")
       }
       if(input$plot == "BlandAltman"){
         shinyjs::show(id = "var1")
@@ -256,6 +249,24 @@ mod_mod_config_server <- function(id,dataDF){
         updateSelectizeInput(session, inputId = "pval",
                              selected = '',
                              choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+      }
+      if(input$plot == "barplot"){
+        shinyjs::show(id = "varxBar")
+        shinyjs::show(id = "varyBar")
+        shinyjs::show(id = "vargroupBar")
+        shinyjs::show(id = "colorBar")
+        updateSelectizeInput(session, inputId = "varxBar",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+        updateSelectizeInput(session, inputId = "varyBar",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+        updateSelectizeInput(session, inputId = "varGroupBar",
+                             selected = 'NONE',
+                             choices = c('NONE',colnames(dataDF)),
                              options = list(placeholder = 'Please select a variable below'))
       }
     })

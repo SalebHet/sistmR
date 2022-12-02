@@ -86,6 +86,10 @@ mod_mod_results_server <- function(id,dataDF,parent){
         output$result <- renderPlot(sistmr::volcanoPlot(dataDF[,parent$log2FC],dataDF[,parent$pval],dataDF))
         shinyjs::show(id = "downloadPlot")
       }
+      if(parent$plot == "barplot"){
+        output$result <- renderPlot(barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar))
+        shinyjs::show(id = "downloadPlot")
+      }
     })
 
     output$DownloadPlot <- downloadHandler(
