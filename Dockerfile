@@ -1,6 +1,6 @@
 #FROM rocker/r-ver:4.2.1
 FROM openanalytics/r-base
-RUN apt-get update && apt-get install -y  git-core libcurl4-openssl-dev libgit2-dev libicu-dev libssl-dev libxml2-dev make pandoc pandoc-citeproc zlib1g-dev #&& rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y  git-core libcurl4-openssl-dev libgit2-dev libicu-dev libssl-dev libxml2-dev make pandoc pandoc-citeproc zlib1g-dev cmake #&& rm -rf /var/lib/apt/lists/*
 #RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)"
 #| tee /usr/local/lib/R/etc/Rprofile.site | tee /usr/lib/R/etc/Rprofile.site
@@ -25,6 +25,9 @@ RUN R -e 'remotes::install_cran("colourpicker")'
 #RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.3.2")'
 RUN R -e 'remotes::install_cran("golem")'
 RUN R -e 'remotes::install_cran("dplyr")'
+RUN R -e 'remotes::install_cran("ggpubr")'
+RUN R -e 'remotes::install_cran("colourpicker")'
+RUN R -e 'remotes::install_cran("shinyWidgets")'
 RUN Rscript -e 'remotes::install_github("sistm/sistmr@4c4af4b0c5312164cd2debd250321745d4391b0d")'
 #RUN mkdir /build_zone
 #ADD . /build_zone
