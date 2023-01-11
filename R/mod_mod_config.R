@@ -151,6 +151,15 @@ mod_mod_config_ui <- function(id){
                                  choicesOpt = listHTML()
 
                      )),
+    conditionalPanel(condition = "input$plot == barplot",
+                     selectizeInput(ns("xscale"),label = "X Scale",
+                                    choices = c("none","log2","log10","sqrt"),
+                                    selected = "none"
+                                    )),
+    conditionalPanel(condition = "input$plot == barplot",
+                     selectizeInput(ns("yscale"),label = "Y Scale",
+                                    choices = c("none","log2","log10","sqrt"),
+                                    selected = "none")),
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -193,6 +202,11 @@ mod_mod_config_server <- function(id,dataDF){
         shinyjs::hide(id = "varyPlot")
         shinyjs::hide(id = "varGroupPlot")
         shinyjs::hide(id = "colorBar")
+        shinyjs::hide(id = "xscale")
+        shinyjs::hide(id = "yscale")
+        shinyjs::hide(id = "varxBar")
+        shinyjs::hide(id = "varyBar")
+        shinyjs::hide(id = "varGroupBar")
       }
       if(input$plot == "BlandAltman"){
         shinyjs::show(id = "var1")
@@ -256,6 +270,8 @@ mod_mod_config_server <- function(id,dataDF){
         shinyjs::show(id = "varyBar")
         shinyjs::show(id = "vargroupBar")
         shinyjs::show(id = "colorBar")
+        shinyjs::show(id = "xscale")
+        shinyjs::show(id = "yscale")
         updateSelectizeInput(session, inputId = "varxBar",
                              selected = '',
                              choices = c('',colnames(dataDF)),

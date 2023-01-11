@@ -87,7 +87,8 @@ mod_mod_results_server <- function(id,dataDF,parent){
         shinyjs::show(id = "downloadPlot")
       }
       if(parent$plot == "barplot"){
-        output$result <- renderPlot(barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar))
+        output$result <- renderPlot(barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar,
+                                            parent$xscale,parent$yscale))
         shinyjs::show(id = "downloadPlot")
       }
     })
