@@ -22,7 +22,8 @@ mod_mod_config_ui <- function(id){
                              MultipleBoxPlots = "MultipleBoxPlots",
                              Normal_Distribution = "Normal_Distribution",
                             VolcanoPlot = "VolcanoPlot",
-                            barplot = "barplot"),
+                            barplot = "barplot",
+                            pie = "pie"),
                  selected = "BlandAltman"),
 
     conditionalPanel(condition = "input$plot == BlandAltman",
@@ -160,6 +161,14 @@ mod_mod_config_ui <- function(id){
                      selectizeInput(ns("yscale"),label = "Y Scale",
                                     choices = c("none","log2","log10","sqrt"),
                                     selected = "none")),
+    conditionalPanel(condition = "input$plot == pie",
+                     selectizeInput(ns("vecPie"),label = "Vector",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))),
+    conditionalPanel(condition = "input$plot == pie",
+                     selectizeInput(ns("groupPie"),label = "group",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))),
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -180,6 +189,10 @@ mod_mod_config_server <- function(id,dataDF){
         shinyjs::hide(id = "fill")
       }
 
+      if(input$plot != "pie"){
+        shinyjs::hide(id = "vecPie")
+        shinyjs::hide(id = "groupPie")
+      }
 
       if(input$plot != "BlandAltman"){
         shinyjs::hide(id = "var1")
@@ -265,6 +278,20 @@ mod_mod_config_server <- function(id,dataDF){
                              choices = c('',colnames(dataDF)),
                              options = list(placeholder = 'Please select a variable below'))
       }
+
+      if(input$plot == "pie"){
+        shinyjs::show(id = "vecPie")
+        shinyjs::show(id = "groupPie")
+        updateSelectizeInput(session, inputId = "vecPie",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+        updateSelectizeInput(session, inputId = "groupPie",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+      }
+
       if(input$plot == "barplot"){
         shinyjs::show(id = "varxBar")
         shinyjs::show(id = "varyBar")

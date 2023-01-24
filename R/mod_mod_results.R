@@ -91,6 +91,10 @@ mod_mod_results_server <- function(id,dataDF,parent){
                                             parent$xscale,parent$yscale))
         shinyjs::show(id = "downloadPlot")
       }
+      if(parent$plot == "pie"){
+        output$result <- renderPlot(piePlot(dataDF,parent$vecPie,parent$groupPie))
+        shinyjs::show((id = "downloadPlot"))
+      }
     })
 
     output$DownloadPlot <- downloadHandler(
