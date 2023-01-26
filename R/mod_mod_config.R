@@ -169,6 +169,23 @@ mod_mod_config_ui <- function(id){
                      selectizeInput(ns("groupPie"),label = "group",
                                     choices = c(Choose = "", NULL),
                                     options = list(placeholder = 'Please select a column name below'))),
+    radioButtons(ns("pieTreatment"), "Plot Type",
+                 choices = c(sum="sum",
+                             median="median",
+                             mean="mean"
+                             ),
+                 selected = "sum"),
+    conditionalPanel(condition = "input$plot == pie",
+                     pickerInput(inputId = ns("colorPie"),
+                                 label = "pickerInput Palettes",
+                                 choices = listPal <- list("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd","PuBu",
+                                                           "PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd",
+                                                           "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
+                                                           "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
+                                 selected = "Set1",
+                                 choicesOpt = listHTML()
+
+                     )),
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -192,6 +209,8 @@ mod_mod_config_server <- function(id,dataDF){
       if(input$plot != "pie"){
         shinyjs::hide(id = "vecPie")
         shinyjs::hide(id = "groupPie")
+        shinyjs::hide(id = "pieTreatment")
+        shinyjs::hide(id = "colorPie")
       }
 
       if(input$plot != "BlandAltman"){
@@ -282,6 +301,7 @@ mod_mod_config_server <- function(id,dataDF){
       if(input$plot == "pie"){
         shinyjs::show(id = "vecPie")
         shinyjs::show(id = "groupPie")
+        shinyjs::show(id = "colorPie")
         updateSelectizeInput(session, inputId = "vecPie",
                              selected = '',
                              choices = c('',colnames(dataDF)),
@@ -290,27 +310,28 @@ mod_mod_config_server <- function(id,dataDF){
                              selected = '',
                              choices = c('',colnames(dataDF)),
                              options = list(placeholder = 'Please select a variable below'))
+        shinyjs::show(id = "pieTreatment")
       }
 
       if(input$plot == "barplot"){
-        shinyjs::show(id = "varxBar")
-        shinyjs::show(id = "varyBar")
-        shinyjs::show(id = "vargroupBar")
-        shinyjs::show(id = "colorBar")
-        shinyjs::show(id = "xscale")
-        shinyjs::show(id = "yscale")
+        shinyjs::show(id = "varxBar");
+        shinyjs::show(id = "varyBar");
+        shinyjs::show(id = "varGroupBar");
+        shinyjs::show(id = "colorBar");
+        shinyjs::show(id = "xscale");
+        shinyjs::show(id = "yscale");
         updateSelectizeInput(session, inputId = "varxBar",
                              selected = '',
                              choices = c('',colnames(dataDF)),
-                             options = list(placeholder = 'Please select a variable below'))
+                             options = list(placeholder = 'Please select a variable below'));
         updateSelectizeInput(session, inputId = "varyBar",
                              selected = '',
                              choices = c('',colnames(dataDF)),
-                             options = list(placeholder = 'Please select a variable below'))
+                             options = list(placeholder = 'Please select a variable below'));
         updateSelectizeInput(session, inputId = "varGroupBar",
                              selected = 'NONE',
                              choices = c('NONE',colnames(dataDF)),
-                             options = list(placeholder = 'Please select a variable below'))
+                             options = list(placeholder = 'Please select a variable below'));
       }
     })
     return(input)

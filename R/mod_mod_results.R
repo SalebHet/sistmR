@@ -83,16 +83,19 @@ mod_mod_results_server <- function(id,dataDF,parent){
         output$tableResult <- DT::renderDataTable(df)
       }
       if(parent$plot == "VolcanoPlot"){
-        output$result <- renderPlot(sistmr::volcanoPlot(dataDF[,parent$log2FC],dataDF[,parent$pval],dataDF))
+        plotRes <<- sistmr::volcanoPlot(dataDF[,parent$log2FC],dataDF[,parent$pval],dataDF)
+        output$result <- renderPlot(plotRes)
         shinyjs::show(id = "downloadPlot")
       }
       if(parent$plot == "barplot"){
-        output$result <- renderPlot(barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar,
-                                            parent$xscale,parent$yscale))
+        plotRes <<- barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar,
+                                       parent$xscale,parent$yscale)
+        output$result <- renderPlot(plotRes)
         shinyjs::show(id = "downloadPlot")
       }
       if(parent$plot == "pie"){
-        output$result <- renderPlot(piePlot(dataDF,parent$vecPie,parent$groupPie))
+        plotRes <<- piePlot(dataDF,parent$vecPie,parent$groupPie,parent$pieTreatment,parent$colorPie)
+        output$result <- renderPlot(plotRes)
         shinyjs::show((id = "downloadPlot"))
       }
     })
