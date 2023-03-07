@@ -7,8 +7,8 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-#' @import colourpicker
-#' @import shinyjs
+#' @importFrom colourpicker colourInput
+#' @importFrom shinyjs hide show
 #' @import shinyWidgets
 mod_mod_config_ui <- function(id){
   library(colourpicker)
