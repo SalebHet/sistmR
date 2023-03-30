@@ -71,7 +71,7 @@ mod_mod_results_server <- function(id,dataDF,parent){
         cat("shape: ")
         cat(parent$shape,"\n")
         dataDF[,parent$var1Box] <<- factor(dataDF[,parent$var1Box],unique(dataDF[,parent$var1Box]))
-        plotRes <<- sistmr::multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
+        plotRes <<- multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
         output$result <- renderPlot(plotRes +
                                       ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
                                       ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
