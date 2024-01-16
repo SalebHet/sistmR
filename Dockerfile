@@ -31,6 +31,8 @@ RUN R -e 'remotes::install_version("ggpubr",repos = "https://cloud.r-project.org
 RUN R -e 'remotes::install_cran("shinyWidgets")'
 RUN Rscript -e 'remotes::install_github("sistm/sistmr@4c4af4b0c5312164cd2debd250321745d4391b0d")'
 RUN R -e 'remotes::install_cran("colourpicker")'
+RUN R -e 'install.packages("BiocManager")'
+RUN R -e 'BiocManager::install("ComplexHeatmap")'
 #RUN mkdir /build_zone
 #ADD . /build_zone
 #WORKDIR /build_zone

@@ -8,6 +8,7 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import ggplot2
+#' @import ComplexHeatmap
 mod_mod_results_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -30,7 +31,7 @@ mod_mod_results_ui <- function(id){
 #' @noRd
 mod_mod_results_server <- function(id,dataDF,parent){
   moduleServer( id, function(input, output, session){
-
+    #browser()
     ns <- session$ns
     plotRes <- NULL
     df <- NULL
@@ -54,49 +55,122 @@ mod_mod_results_server <- function(id,dataDF,parent){
     })
 
     observeEvent(parent$plotButton,{
+      #browser()
       updateTabsetPanel(session = session, "tabPanel",
                         selected = "Graph")
       if(parent$plot == "BlandAltman"){
+        if(parent$col1 == "" | parent$col2 == "" | parent$col3 == "" | parent$var1 == "" |
+           parent$var2 == "" | parent$gradient == "" | parent$extremum == ""){
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for parameters and colors"
+          ))
+        }else{
         colo <- c(parent$col1,parent$col2,parent$col3)
         plotRes <<- sistmr::BlandAltmanPlot(dataDF[,parent$var1],dataDF[,parent$var2],with_gradient = parent$gradient,
                                             line_color = colo,extremum_pctg = parent$extremum)
         output$result <- renderPlot(plotRes)
         shinyjs::show(id = "downloadPlot")
+        }
       }
       if(parent$plot == "MultipleBoxPlots"){
-        cat("color: ")
-        cat(parent$color,"\n")
-        cat("fill: ")
-        cat(parent$fill,"\n")
-        cat("shape: ")
-        cat(parent$shape,"\n")
-        dataDF[,parent$var1Box] <<- factor(dataDF[,parent$var1Box],unique(dataDF[,parent$var1Box]))
-        plotRes <<- multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
-        output$result <- renderPlot(plotRes +
-                                      ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
-                                      ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
-        shinyjs::show(id = "downloadPlot")
+        if(parent$color == "" | parent$fill == "" | parent$shape == "" | parent$var1Box == "" |
+           parent$var2Box == "" | parent$points == ""){
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for parameters and colors"
+          ))
+        }else{
+          cat("color: ")
+          cat(parent$color,"\n")
+          cat("fill: ")
+          cat(parent$fill,"\n")
+          cat("shape: ")
+          cat(parent$shape,"\n")
+          dataDF[,parent$var1Box] <<- factor(dataDF[,parent$var1Box],unique(dataDF[,parent$var1Box]))
+          plotRes <<- multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
+          output$result <- renderPlot(plotRes +
+                                        ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
+                                        ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
+          shinyjs::show(id = "downloadPlot")
+        }
       }
+
       if(parent$plot == "Normal_Distribution"){
         df <<- as.data.frame(sistmr::normal_distribution(dataDF[,parent$vecNorm]))
         colnames(df) <<- c("value")
         output$tableResult <- DT::renderDataTable(df)
       }
+
       if(parent$plot == "VolcanoPlot"){
-        plotRes <<- sistmr::volcanoPlot(dataDF[,parent$log2FC],dataDF[,parent$pval],dataDF)
-        output$result <- renderPlot(plotRes)
-        shinyjs::show(id = "downloadPlot")
+        #browser()
+        if(parent$log2FC == "" | parent$pval == ""){
+          cat("Must show alert")
+          # shinyalert("Please Select Column",type = "warning",showConfirmButton = TRUE,
+          #            closeOnClickOutside = TRUE)
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for log2FC and PValue"
+          ))
+        }else{
+          log2FC <- parent$log2FC
+          pval <- parent$pval
+          geneName <- parent$GenesName
+          cat("geneName: ",geneName)
+          cat("Shouldn't show alert")
+          if(geneName == "NONE" | geneName==""){
+            plotRes <<- volcanoPlot(log2fc = log2FC,pValue = pval,data = dataDF)
+          }
+          else{
+            plotRes <<- volcanoPlot(log2fc = log2FC,pValue = pval,data = dataDF,geneNames = geneName)
+          }
+          #browser()
+          output$result <- renderPlot(plotRes)
+          shinyjs::show(id = "downloadPlot")
+        }
       }
       if(parent$plot == "barplot"){
+        if(parent$varxBar == ""|parent$varyBar == ""|parent$varGroupBar == ""|parent$colorBar == ""|
+           parent$xscale == ""|parent$yscale == ""){
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for parameters and colors"
+          ))
+        }else{
         plotRes <<- barplot(dataDF,parent$varxBar,parent$varyBar,parent$varGroupBar,parent$colorBar,
                                        parent$xscale,parent$yscale)
         output$result <- renderPlot(plotRes)
         shinyjs::show(id = "downloadPlot")
+        }
       }
       if(parent$plot == "pie"){
-        plotRes <<- piePlot(dataDF,parent$vecPie,parent$groupPie,parent$pieTreatment,parent$colorPie)
+        if(parent$vecPie == ""|parent$groupPie == ""|parent$pieTreatment == ""|parent$colorPie == ""){
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for parameters and colors"
+          ))
+        }else{
+          plotRes <<- piePlot(dataDF,parent$vecPie,parent$groupPie,parent$pieTreatment,parent$colorPie)
+          output$result <- renderPlot(plotRes)
+          shinyjs::show((id = "downloadPlot"))
+        }
+      }
+      if(parent$plot == "line"){
+        if(parent$varxline == ""|parent$varyline == ""|parent$varGroupline == ""){
+          showModal(modalDialog(
+            title = "Information",
+            "Please select columns for parameters and colors"
+          ))
+        }else{
+        plotRes <<- lineplot(dataDF,parent$varxline,parent$varyline,parent$varGroupline,parent$varGroupline)
         output$result <- renderPlot(plotRes)
-        shinyjs::show((id = "downloadPlot"))
+        shinyjs::show(id = "downloadPlot")
+        }
+      }
+      if(parent$plot == "heatmap"){
+        plotRes <<- ComplexHeatmap::Heatmap(dataDF)
+        output$result <- renderPlot(plotRes)
+        shinyjs::show(id = "downloadPlot")
       }
     })
 

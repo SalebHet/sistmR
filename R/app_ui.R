@@ -12,6 +12,7 @@ app_ui <- function(request) {
     # Your application UI logic
     fluidPage(
       shinyjs::useShinyjs(),
+      shinyalert::useShinyalert(force = TRUE),
       h1("sistmR"),
       tags$hr(),
       sidebarLayout(

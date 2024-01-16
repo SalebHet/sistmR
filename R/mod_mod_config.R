@@ -10,8 +10,10 @@
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyjs hide show
 #' @import shinyWidgets
+#' @import shinyalert
 mod_mod_config_ui <- function(id){
   library(colourpicker)
+  #useShinyalert()
   ns <- NS(id)
   shinyjs::useShinyjs()
   #browser()
@@ -23,7 +25,9 @@ mod_mod_config_ui <- function(id){
                              Normal_Distribution = "Normal_Distribution",
                             VolcanoPlot = "VolcanoPlot",
                             barplot = "barplot",
-                            pie = "pie"),
+                            pie = "pie",
+                            line = "line",
+                            heatmap = "heatmap"),
                  selected = "BlandAltman"),
 
     conditionalPanel(condition = "input$plot == BlandAltman",
@@ -126,6 +130,11 @@ mod_mod_config_ui <- function(id){
                                     choices = c(Choose = "", NULL),
                                     options = list(placeholder = 'Please select a column name below'))
     ),
+    conditionalPanel(condition = "input$plot == VolcanoPlot",
+                     selectizeInput(ns("GenesName"),label = "Genes Name",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
     conditionalPanel(condition = "input$plot == barplot",
                      selectizeInput(ns("varxBar"),label = "x Var",
                                     choices = c(Choose = "", NULL),
@@ -186,6 +195,32 @@ mod_mod_config_ui <- function(id){
                                  choicesOpt = listHTML()
 
                      )),
+    conditionalPanel(condition = "input$plot == line",
+                     selectizeInput(ns("varxline"),label = "x Var",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == line",
+                     selectizeInput(ns("varyline"),label = "y Var",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == line",
+                     selectizeInput(ns("varGroupline"),label = "Group",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below'))
+    ),
+    conditionalPanel(condition = "input$plot == line",
+                     pickerInput(inputId = ns("colorline"),
+                                 label = "pickerInput Palettes",
+                                 choices = listPal <- list("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd","PuBu",
+                                                           "PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd",
+                                                           "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
+                                                           "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
+                                 selected = "Set1",
+                                 choicesOpt = listHTML()
+
+                     )),
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -228,6 +263,7 @@ mod_mod_config_server <- function(id,dataDF){
       if(input$plot != "VolcanoPlot"){
         shinyjs::hide(id = "log2FC")
         shinyjs::hide(id = "pval")
+        shinyjs::hide(id = "GenesName")
       }
       if(input$plot != "barplot"){
         shinyjs::hide(id = "varxPlot")
@@ -288,6 +324,7 @@ mod_mod_config_server <- function(id,dataDF){
       if(input$plot == "VolcanoPlot"){
         shinyjs::show(id = "log2FC")
         shinyjs::show(id = "pval")
+        shinyjs::show(id = "GenesName")
         updateSelectizeInput(session, inputId = "log2FC",
                              selected = '',
                              choices = c('',colnames(dataDF)),
@@ -295,6 +332,10 @@ mod_mod_config_server <- function(id,dataDF){
         updateSelectizeInput(session, inputId = "pval",
                              selected = '',
                              choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'))
+        updateSelectizeInput(session, inputId = "GenesName",
+                             selected = '',
+                             choices = c('',c(colnames(dataDF),"NONE")),
                              options = list(placeholder = 'Please select a variable below'))
       }
 
@@ -332,6 +373,30 @@ mod_mod_config_server <- function(id,dataDF){
                              selected = 'NONE',
                              choices = c('NONE',colnames(dataDF)),
                              options = list(placeholder = 'Please select a variable below'));
+      }
+      if(input$plot == "line"){
+        shinyjs::show(id = "varxline");
+        shinyjs::show(id = "varyline");
+        shinyjs::show(id = "varGroupline");
+        shinyjs::show(id = "colorline");
+        updateSelectizeInput(session, inputId = "varxline",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'));
+        updateSelectizeInput(session, inputId = "varyline",
+                             selected = '',
+                             choices = c('',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'));
+        updateSelectizeInput(session, inputId = "varGroupline",
+                             selected = 'NONE',
+                             choices = c('NONE',colnames(dataDF)),
+                             options = list(placeholder = 'Please select a variable below'));
+      }
+      if(input$plot != "line"){
+        shinyjs::hide(id = "varxline");
+        shinyjs::hide(id = "varyline");
+        shinyjs::hide(id = "varGroupline");
+        shinyjs::hide(id = "colorline");
       }
     })
     return(input)

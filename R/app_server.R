@@ -54,6 +54,7 @@ app_server <- function(input, output, session) {
       #cat("Result request => ")
       #cat(as.character(labkey.data),"\n")
       dataDF <<- labkey.data
+      dataDF <<- dataDF[,colSums(is.na(dataDF))<nrow(dataDF)]
     }
   })
 
