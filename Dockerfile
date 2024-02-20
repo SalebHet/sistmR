@@ -33,6 +33,7 @@ RUN Rscript -e 'remotes::install_github("sistm/sistmr@4c4af4b0c5312164cd2debd250
 RUN R -e 'remotes::install_cran("colourpicker")'
 RUN R -e 'install.packages("BiocManager")'
 RUN R -e 'BiocManager::install("ComplexHeatmap")'
+RUN R -e 'install.packages("shinyalert")'
 #RUN mkdir /build_zone
 #ADD . /build_zone
 #WORKDIR /build_zone
