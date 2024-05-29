@@ -26,8 +26,8 @@ mod_mod_config_ui <- function(id){
                             VolcanoPlot = "VolcanoPlot",
                             barplot = "barplot",
                             pie = "pie",
-                            line = "line",
-                            heatmap = "heatmap"),
+                            line = "line"),
+                            #heatmap = "heatmap"),
                  selected = "BlandAltman"),
 
     conditionalPanel(condition = "input$plot == BlandAltman",
@@ -221,6 +221,36 @@ mod_mod_config_ui <- function(id){
                                  choicesOpt = listHTML()
 
                      )),
+    conditionalPanel(condition = 'input$plot == heatmap',
+                     checkboxInput(inputId = ns("colCluster"), label = "Clustering Column",TRUE),
+                     checkboxInput(inputId = ns("rowCluster"), label = "Clustering Row",TRUE),
+                     radioButtons(inputId = ns("rowMetaData"),"Select dataset for rows legend",
+                                 choices = c(NONE = "NONE",meta1 = "Metadata1",meta2 = "Metadata2"),
+                                 selected = "NONE"),
+                                 # options = list(onchange = I("function(value){
+                                 #                   alert(value)"))),
+                     #conditionalPanel(condition = "input$rowMetaData != NONE",
+                     selectizeInput(ns("rowMetaDataVec"),label = "Select column for row class",
+                                    choices = c(Choose = "", NULL),
+                                    options = list(placeholder = 'Please select a column name below')),
+                     #),
+
+                     radioButtons(inputId = ns("colMetaData"),
+                                 "Select dataset for columns legend",
+                                 choices = c(NONE = "NONE",meta1 = "Metadata1",meta2 = "Metadata2"),
+                                 selected = "NONE"),
+                                 # options = list(onchange = I("function(value){
+                                 #                   alert(value)"))),
+                     #conditionalPanel(condition = "input$colMetaData != NONE",
+                       selectizeInput(ns("colMetaDataVec"),label = "Select column for column class",
+                                      choices = c(Choose = "", NULL),
+                                      options = list(placeholder = 'Please select a column name below'))
+                    # ),
+
+                     ),
+
+
+
     actionButton(ns("plotButton"),"Draw Plot")
   )
 }
@@ -228,10 +258,12 @@ mod_mod_config_ui <- function(id){
 #' mod_config Server Functions
 #'
 #' @noRd
-mod_mod_config_server <- function(id,dataDF){
+mod_mod_config_server <- function(id,dataDF,metaData1,metaData2){
+  #cat("server init")
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     observeEvent(input$plot,{
+      #browser()
       if(input$plot != "MultipleBoxPlots"){
         shinyjs::hide(id = "var1Box")
         shinyjs::hide(id = "var2Box")
@@ -398,9 +430,60 @@ mod_mod_config_server <- function(id,dataDF){
         shinyjs::hide(id = "varGroupline");
         shinyjs::hide(id = "colorline");
       }
-    })
-    return(input)
+      if(input$plot != "heatmap"){
+        shinyjs::hide(id = "colCluster");
+        shinyjs::hide(id = "rowCluster");
+        shinyjs::hide(id = "colMetaData");
+        shinyjs::hide(id = "rowMetaData");
+        shinyjs::hide(id = "colMetaDataVec");
+        shinyjs::hide(id = "rowMetaDataVec");
+      }
+      if(input$plot == "heatmap"){
+        #browser()
+        shinyjs::show(id = "colCluster");
+        shinyjs::show(id = "rowCluster");
+        shinyjs::show(id = "colMetaData");
+        shinyjs::show(id = "rowMetaData");
+        observeEvent(input$colMetaData,{
+          cat("\n colMetaData:",input$colMetaData)
+          if(input$colMetaData != "NONE"){
+            cat("Show colMetaDataVec \n")
+            shinyjs::show(id = "colMetaDataVec")
+          }else{
+            shinyjs::hide(id = "colMetaDataVec")
+          }
+        })
+        observeEvent(input$rowMetaData,{
+          cat("\n rowMetaData:",input$rowMetaData)
+          if(input$rowMetaData != "NONE"){
+            shinyjs::show(id = "rowMetaDataVec")
+          }else{
+            shinyjs::hide(id = "rowMetaDataVec")
+          }
+        })
+        #cat("colMetaData: ", input$colMetaData);
+        #cat("rowMetaData: ", input$rowMetaData);
+
+      }
+
+     return(input)
   })
+  # observeEvent(input$colMetaData,function(){
+  #   cat("ObserveEvent colMetaData")
+  #   if(input$colMetaData != "NONE"){
+  #     cat("colMetaData != NONE")
+  #     shinyjs::show(id = "colMetaDataVec");
+  #   }
+  # })
+  # observeEvent(input$rowMetaData,function(){
+  #   cat("ObserveEvent rowMetaData")
+  #   if(input$rowMetaData != "NONE"){
+  #     cat("rowMetaData != NONE")
+  #     shinyjs::show(id = "rowMetaDataVec");
+  #   }
+  # })
+  #return(input)
+})
 }
 
 ## To be copied in the UI

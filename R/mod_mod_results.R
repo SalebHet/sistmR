@@ -9,18 +9,25 @@
 #' @importFrom shiny NS tagList
 #' @import ggplot2
 #' @import ComplexHeatmap
+#' @import InteractiveComplexHeatmap
 mod_mod_results_ui <- function(id){
   ns <- NS(id)
   tagList(
     tabsetPanel(type = "tabs", id=ns("tabPanel"),
                 tabPanel("Data",shinycssloaders::withSpinner(DT::dataTableOutput(ns("data")))),
+                tabPanel("Metadata1",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta1tab")))),
+                tabPanel("Metadata2",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta2tab")))),
                 tabPanel("Graph",
                          div(id = ns("plotBox"),shinycssloaders::withSpinner(
                           plotOutput(ns("result")))
-                          ),
-                          DT::dataTableOutput(ns("tableResult")),
-                          downloadButton(ns("DownloadPlot"),"Download Plots"),
-                         downloadButton(ns("DownloadTable"),"Download Results")
+                         ),
+                        DT::dataTableOutput(ns("tableResult")),
+                          #htmlOutput(ns("hmOut")),
+                        # div(id = ns("hmOut"),
+                        #   InteractiveComplexHeatmapOutput(heatmap_id = ns("hmPlot")) # InteractiveComplexHeatmap don't working with shiny module yet
+                        # ),
+                        downloadButton(ns("DownloadPlot"),"Download Plots"),
+                        downloadButton(ns("DownloadTable"),"Download Results")
                 )
     )
   )
@@ -29,7 +36,7 @@ mod_mod_results_ui <- function(id){
 #' mod_results Server Functions
 #'
 #' @noRd
-mod_mod_results_server <- function(id,dataDF,parent){
+mod_mod_results_server <- function(id,dataDF,parent,metaData1,metaData2){
   moduleServer( id, function(input, output, session){
     #browser()
     ns <- session$ns
@@ -37,6 +44,8 @@ mod_mod_results_server <- function(id,dataDF,parent){
     df <- NULL
     shinyjs::hide(id = "downloadPlot")
     output$data <- DT::renderDataTable(dataDF)
+    output$meta1 <- DT::renderDataTable(metaData1)
+    output$meta2 <- DT::renderDataTable(metaData2)
 
     observeEvent(parent$plot,{
       if(parent$plot == "Normal_Distribution"){
@@ -168,10 +177,39 @@ mod_mod_results_server <- function(id,dataDF,parent){
         }
       }
       if(parent$plot == "heatmap"){
-        plotRes <<- ComplexHeatmap::Heatmap(dataDF)
+        #browser()
+        #shinyjs::showElement(id = "hmOut")
+        #shinyjs::hideElement(id = "plotBox")
+        dataDF <- as.matrix(dataDF)
+        if(parent$colCluster == FALSE & parent$rowCluster == FALSE){
+          cat("No clustering at all")
+          plotRes <<- ComplexHeatmap::Heatmap(matrix = dataDF,cluster_rows = FALSE,cluster_columns = FALSE)
+        }
+        else if(parent$colCluster == FALSE){
+          cat("No column clustering")
+          plotRes <<- ComplexHeatmap::Heatmap(matrix = dataDF,cluster_columns = FALSE)
+        }
+        else if(parent$rowCluster == FALSE){
+          cat("No Row clustering")
+          plotRes <<- ComplexHeatmap::Heatmap(matrix = dataDF,cluster_rows = FALSE)
+        }else{
+          cat("Full Clustering")
+          plotRes <<- ComplexHeatmap::Heatmap(dataDF)
+        }
         output$result <- renderPlot(plotRes)
-        shinyjs::show(id = "downloadPlot")
+        # data(rand_mat) # simply a random matrix
+        # ht1 = Heatmap(rand_mat, name = "mat",
+        #              show_row_names = FALSE, show_column_names = FALSE)
+        # ht1 = draw(ht1)
+        # plotRes <- draw(plotRes)
+        #browser()
+        #makeInteractiveComplexHeatmap(input = input, output = output,session = ns,ht_list = ht1,heatmap_id = "hmPlot")
+        #shinyjs::show(id = "downloadPlot")
       }
+      # if(parent$plot != "heatmap"){
+      #   shinyjs::hideElement("hmOut")
+      #   shinyjs::showElement(id = "plotBox")
+      # }
     })
 
     output$DownloadPlot <- downloadHandler(

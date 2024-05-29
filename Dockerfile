@@ -1,4 +1,6 @@
-FROM rocker/r-ver:4.2.1
+#FROM rocker/r-ver:4.2.1
+FROM rocker/r-ver:4.3.1
+
 #FROM openanalytics/r-base
 RUN apt-get update && apt-get install -y  git-core libcurl4-openssl-dev libgit2-dev libicu-dev libssl-dev libxml2-dev make pandoc pandoc-citeproc zlib1g-dev cmake #&& rm -rf /var/lib/apt/lists/*
 #RUN mkdir -p /usr/local/lib/R/etc/ /usr/lib/R/etc/
@@ -27,17 +29,22 @@ RUN R -e 'remotes::install_cran("Rlabkey")'
 RUN R -e 'remotes::install_cran("golem")'
 RUN R -e 'remotes::install_cran("dplyr")'
 #RUN R -e 'remotes::install_cran("ggpubr")'
-RUN R -e 'remotes::install_version("ggpubr",repos = "https://cloud.r-project.org", version = "0.5.0")'
+#RUN R -e 'remotes::install_version("ggpubr",repos = "https://cloud.r-project.org", version = "0.5.0")'
+RUN R -e 'remotes::install_cran("ggpubr")'
+#, version = "0.5.0")'
 RUN R -e 'remotes::install_cran("shinyWidgets")'
 RUN Rscript -e 'remotes::install_github("sistm/sistmr@4c4af4b0c5312164cd2debd250321745d4391b0d")'
 RUN R -e 'remotes::install_cran("colourpicker")'
 RUN R -e 'install.packages("BiocManager")'
 RUN R -e 'BiocManager::install("ComplexHeatmap")'
+RUN R -e 'BiocManager::install("InteractiveComplexHeatmap")'
+RUN R -e 'install.packages("shinyalert")'
 #RUN mkdir /build_zone
 #ADD . /build_zone
 #WORKDIR /build_zone
+#RUN R -e 'Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")'
 COPY sistmR_*.tar.gz /app.tar.gz
-RUN R -e 'remotes::install_local("/app.tar.gz", force = TRUE, build_opts = c("--no-multiarch","--no-examples"))'
+RUN R -e 'Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true"); remotes::install_local("/app.tar.gz", force = TRUE, build_opts = c("--no-multiarch","--no-examples","--no-build-vignettes"))'
 COPY Rprofile.site /usr/lib/R/etc/
 #RUN R -e 'remotes::install_local(upgrade="never")'
 #RUN rm -rf /build_zone
