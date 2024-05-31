@@ -23,7 +23,7 @@ mod_mod_config_ui <- function(id){
                  choices = c(BlandAltman = "BlandAltman",
                              MultipleBoxPlots = "MultipleBoxPlots",
                              Normal_Distribution = "Normal_Distribution",
-                            VolcanoPlot = "VolcanoPlot",
+                            #VolcanoPlot = "VolcanoPlot",
                             barplot = "barplot",
                             pie = "pie",
                             line = "line"),
