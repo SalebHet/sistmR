@@ -19,7 +19,7 @@ app_server <- function(input, output, session) {
   observe({
     query <- parseQueryString(session$clientData$url_search)
     if (!is.null(query[['key']])) {
-
+      #browser()
       #updateSliderInput(session, "bins", value = query[['bins']])
       key <<- query[['key']]
       subF <<- query[['sub']]
@@ -113,11 +113,13 @@ app_server <- function(input, output, session) {
       }
       #cat("Result request => ")
       #cat(as.character(labkey.data),"\n")
+      #browser()
       dataDF <<- labkey.data
       dataDF <<- dataDF[,colSums(is.na(dataDF))<nrow(dataDF)]
     }
   })
 
-  parent <- mod_mod_config_server("mod_config_1",dataDF,metaData1,metaData2)
-  mod_mod_results_server("mod_results_1",dataDF,parent,metaData1,metaData2)
+  parents <- mod_mod_config_server("mod_config_1",dataDF,metaData1,metaData2)
+  #browser()
+  mod_mod_results_server("mod_results_1",dataDF,parents,metaData1,metaData2)
 }

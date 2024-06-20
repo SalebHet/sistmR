@@ -69,52 +69,55 @@ mod_mod_config_ui <- function(id){
                      checkboxInput(ns("fill"),label = "Fill Boxplots", value = TRUE)
     ),
     conditionalPanel(condition = "input$plot == MultipleBoxPlots && input$points == TRUE",
-      pickerInput(inputId = ns("shape"),
-                  label = "Shape of points",
-                  choices = listShape <- list("circle","square","diamond","triangle","plus",
-                                            "circle open","square open","diamond open","triangle open","triangle down open","cross",
-                                            "circle filled","square filled","diamond filled","triangle filled","triangle down filled","asterisk",
-                                            "cricle cross","square cross","circle plus","square plus","diamond plus","circle small","square triangle","bullet"),
-                  selected = "circle open",
-                  choicesOpt = list(content = c(sprintf("<img src='./shapes/circle.png' width=30px><div class='jhr'>%s</div></img>", "circle"),
-                                                sprintf("<img src='./shapes/square.png' width=30px><div class='jhr'>%s</div></img>", "square"),
-                                                sprintf("<img src='./shapes/diamond.png' width=30px><div class='jhr'>%s</div></img>", "diamond"),
-                                                sprintf("<img src='./shapes/triangle.png' width=30px><div class='jhr'>%s</div></img>", "triangle"),
-                                                sprintf("<img src='./shapes/plus.png' width=30px><div class='jhr'>%s</div></img>", "plus"),
-                                                sprintf("<img src='./shapes/circle open.png' width=30px><div class='jhr'>%s</div></img>", "circle open"),
-                                                sprintf("<img src='./shapes/square open.png' width=30px><div class='jhr'>%s</div></img>", "square open"),
-                                                sprintf("<img src='./shapes/diamond open.png' width=30px><div class='jhr'>%s</div></img>", "diamond open"),
-                                                sprintf("<img src='./shapes/triangle open.png' width=30px><div class='jhr'>%s</div></img>", "triangle open"),
-                                                sprintf("<img src='./shapes/triangle down.png' width=30px><div class='jhr'>%s</div></img>", "triangle down open"),
-                                                sprintf("<img src='./shapes/cross.png' width=30px><div class='jhr'>%s</div></img>", "cross"),
-                                                sprintf("<img src='./shapes/circle filled.png' width=30px><div class='jhr'>%s</div></img>", "circle filled"),
-                                                sprintf("<img src='./shapes/squar filled.png' width=30px><div class='jhr'>%s</div></img>", "square filled"),
-                                                sprintf("<img src='./shapes/diamond filled.png' width=30px><div class='jhr'>%s</div></img>", "diamond filled"),
-                                                sprintf("<img src='./shapes/triangle filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle filled"),
-                                                sprintf("<img src='./shapes/triangle down filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle down filled"),
-                                                sprintf("<img src='./shapes/asterisk.png' width=30px><div class='jhr'>%s</div></img>", "asterisk"),
-                                                sprintf("<img src='./shapes/circle cross.png' width=30px><div class='jhr'>%s</div></img>", "circle cross"),
-                                                sprintf("<img src='./shapes/square cross' width=30px><div class='jhr'>%s</div></img>", "square cross"),
-                                                sprintf("<img src='./shapes/circle plus.png' width=30px><div class='jhr'>%s</div></img>", "circle plus"),
-                                                sprintf("<img src='./shapes/square plus.png' width=30px><div class='jhr'>%s</div></img>", "square plus"),
-                                                sprintf("<img src='./shapes/diamond plus.png' width=30px><div class='jhr'>%s</div></img>", "diamond plus"),
-                                                sprintf("<img src='./shapes/circle small.png' width=30px><div class='jhr'>%s</div></img>", "circle small"),
-                                                sprintf("<img src='./shapes/square triangle.png' width=30px><div class='jhr'>%s</div></img>", "square triangle"),
-                                                sprintf("<img src='./shapes/bullet.png' width=30px><div class='jhr'>%s</div></img>", "bullet")
-                                                ))
-                  )
+                     uiOutput(ns("shapes"))
+      # pickerInput(inputId = ns("shape"),
+      #             label = "Shape of points",
+      #             choices = listShape <- list("circle","square","diamond","triangle","plus",
+      #                                       "circle open","square open","diamond open","triangle open","triangle down open","cross",
+      #                                       "circle filled","square filled","diamond filled","triangle filled","triangle down filled","asterisk",
+      #                                       "cricle cross","square cross","circle plus","square plus","diamond plus","circle small","square triangle","bullet"),
+      #             selected = "circle open",
+      #             choicesOpt = list(content = c(sprintf("<img src='./shapes/circle.png' width=30px><div class='jhr'>%s</div></img>", "circle"),
+      #                                           sprintf("<img src='./shapes/square.png' width=30px><div class='jhr'>%s</div></img>", "square"),
+      #                                           sprintf("<img src='./shapes/diamond.png' width=30px><div class='jhr'>%s</div></img>", "diamond"),
+      #                                           sprintf("<img src='./shapes/triangle.png' width=30px><div class='jhr'>%s</div></img>", "triangle"),
+      #                                           sprintf("<img src='./shapes/plus.png' width=30px><div class='jhr'>%s</div></img>", "plus"),
+      #                                           sprintf("<img src='./shapes/circle open.png' width=30px><div class='jhr'>%s</div></img>", "circle open"),
+      #                                           sprintf("<img src='./shapes/square open.png' width=30px><div class='jhr'>%s</div></img>", "square open"),
+      #                                           sprintf("<img src='./shapes/diamond open.png' width=30px><div class='jhr'>%s</div></img>", "diamond open"),
+      #                                           sprintf("<img src='./shapes/triangle open.png' width=30px><div class='jhr'>%s</div></img>", "triangle open"),
+      #                                           sprintf("<img src='./shapes/triangle down.png' width=30px><div class='jhr'>%s</div></img>", "triangle down open"),
+      #                                           sprintf("<img src='./shapes/cross.png' width=30px><div class='jhr'>%s</div></img>", "cross"),
+      #                                           sprintf("<img src='./shapes/circle filled.png' width=30px><div class='jhr'>%s</div></img>", "circle filled"),
+      #                                           sprintf("<img src='./shapes/squar filled.png' width=30px><div class='jhr'>%s</div></img>", "square filled"),
+      #                                           sprintf("<img src='./shapes/diamond filled.png' width=30px><div class='jhr'>%s</div></img>", "diamond filled"),
+      #                                           sprintf("<img src='./shapes/triangle filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle filled"),
+      #                                           sprintf("<img src='./shapes/triangle down filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle down filled"),
+      #                                           sprintf("<img src='./shapes/asterisk.png' width=30px><div class='jhr'>%s</div></img>", "asterisk"),
+      #                                           sprintf("<img src='./shapes/circle cross.png' width=30px><div class='jhr'>%s</div></img>", "circle cross"),
+      #                                           sprintf("<img src='./shapes/square cross' width=30px><div class='jhr'>%s</div></img>", "square cross"),
+      #                                           sprintf("<img src='./shapes/circle plus.png' width=30px><div class='jhr'>%s</div></img>", "circle plus"),
+      #                                           sprintf("<img src='./shapes/square plus.png' width=30px><div class='jhr'>%s</div></img>", "square plus"),
+      #                                           sprintf("<img src='./shapes/diamond plus.png' width=30px><div class='jhr'>%s</div></img>", "diamond plus"),
+      #                                           sprintf("<img src='./shapes/circle small.png' width=30px><div class='jhr'>%s</div></img>", "circle small"),
+      #                                           sprintf("<img src='./shapes/square triangle.png' width=30px><div class='jhr'>%s</div></img>", "square triangle"),
+      #                                           sprintf("<img src='./shapes/bullet.png' width=30px><div class='jhr'>%s</div></img>", "bullet")
+      #                                           ))
+      #             )
     ),
     conditionalPanel(condition = "input$plot == MultipleBoxPlots",
-                    pickerInput(inputId = ns("color"),
-                    label = "pickerInput Palettes",
-                    choices = listPal <- list("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd","PuBu",
-                                              "PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd",
-                                              "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
-                                              "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
-                    selected = "Set1",
-                    choicesOpt = listHTML()
-
-      )),
+                     uiOutput(ns("BoxPlotColors"))
+      #               pickerInput(inputId = ns("color"),
+      #               label = "pickerInput Palettes",
+      #               choices = listPal <- list("Blues","BuGn","BuPu","GnBu","Greens","Greys","Oranges","OrRd","PuBu",
+      #                                         "PuBuGn","PuRd","Purples","RdPu","Reds","YlGn","YlGnBu","YlOrBr","YlOrRd",
+      #                                         "BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral",
+      #                                         "Set3","Set2","Set1","Pastel2","Pastel1","Paired","Dark2","Accent"),#c("pal1","pal2", "pal3", "pal4"),#df$val,
+      #               selected = "Set1",
+      #               choicesOpt = listHTML()
+      #
+      # )
+      ),
     conditionalPanel(condition = "input$plot == Normal_Distribution",
                      selectizeInput(ns("vecNorm"),label = "Vector",
                                     choices = c(Choose = "", NULL),
@@ -339,12 +342,103 @@ mod_mod_config_server <- function(id,dataDF,metaData1,metaData2){
                              choices = c('',colnames(dataDF)),
                              options = list(placeholder = 'Please select a variable below'))
         shinyjs::show(id = "color")
+
       }
+      observeEvent(input$var1Box,{
+        #browser()
+        #rowMetaDataVec <<- input$var2Box
+        if(input$var1Box != ""){
+          #browser()
+          listRowClass <<- unique(dataDF[,input$var1Box])
+          #cat(str(listRowClass))
+          #browser()
+          output$BoxPlotColors <- renderUI({
+            #map(listRowClass(),)
+            BoxPlotColors <- lapply(listRowClass, function(i){
+              #browser()
+              #cat(paste("Select color for: ",str(i)))
+              colourpicker::colourInput(inputId = session$ns(paste0("color",i)),label = paste("Select color for",i),showColour = "background",
+                                        value = "Blue",returnName = TRUE)
+            })
+            #cat(str(BoxPlotColors))
+            do.call(tagList,BoxPlotColors)
+          })
+          if(input$points == TRUE){
+            output$shapes <- renderUI({
+              #map(listRowClass(),)
+              shapes <- lapply(listRowClass, function(i){
+                #cat(paste0("Create shape",i,"\n"))
+                pickerInput(inputId = ns(paste0("shape",i)),
+                            label = paste("Shape for",i),
+                            choices = listShape <- list("circle","square","diamond","cross"),
+                            selected = "circle",
+                            choicesOpt = list(content = c(sprintf("<img src='./shapes/circle.png' width=30px><div class='jhr'>%s</div></img>", "circle"),#ok
+                                                          sprintf("<img src='./shapes/square.png' width=30px><div class='jhr'>%s</div></img>", "square"),#ok
+                                                          sprintf("<img src='./shapes/diamond.png' width=30px><div class='jhr'>%s</div></img>", "diamond"),#ok
+                                                          sprintf("<img src='./shapes/cross.png' width=30px><div class='jhr'>%s</div></img>", "cross")#ok
+                              )
+                            )
+                )
+              })
+              #cat(str(BoxPlotColors))
+              do.call(tagList,shapes)
+            })
+          }
+        }
+      })
       if(input$plot == "MultipleBoxPlots" && input$points == TRUE){
-        shinyjs::show(id = "shape")
+        #shinyjs::show(id = "shape")
+        if(input$var1Box != ""){
+          #browser()
+          listRowClass <<- unique(dataDF[,input$var1Box])
+          #cat(str(listRowClass))
+          #browser()
+          output$shapes <- renderUI({
+            #map(listRowClass(),)
+            shapes <- lapply(listRowClass, function(i){
+              cat(paste0("Create shape",i,"\n"))
+              pickerInput(inputId = ns(paste0("shape",i)),
+                          label = "Shape of points",
+                          choices = listShape <- list("circle","square","diamond","triangle","plus",
+                                                    "circle open","square open","diamond open","triangle open","triangle down open","cross",
+                                                    "circle filled","square filled","diamond filled","triangle filled","triangle down filled","asterisk",
+                                                    "cricle cross","square cross","circle plus","square plus","diamond plus","circle small","square triangle","bullet"),
+                          selected = "circle open",
+                          choicesOpt = list(content = c(sprintf("<img src='./shapes/circle.png' width=30px><div class='jhr'>%s</div></img>", "circle"),
+                                                        sprintf("<img src='./shapes/square.png' width=30px><div class='jhr'>%s</div></img>", "square"),
+                                                        sprintf("<img src='./shapes/diamond.png' width=30px><div class='jhr'>%s</div></img>", "diamond"),
+                                                        sprintf("<img src='./shapes/triangle.png' width=30px><div class='jhr'>%s</div></img>", "triangle"),
+                                                        sprintf("<img src='./shapes/plus.png' width=30px><div class='jhr'>%s</div></img>", "plus"),
+                                                        sprintf("<img src='./shapes/circle open.png' width=30px><div class='jhr'>%s</div></img>", "circle open"),
+                                                        sprintf("<img src='./shapes/square open.png' width=30px><div class='jhr'>%s</div></img>", "square open"),
+                                                        sprintf("<img src='./shapes/diamond open.png' width=30px><div class='jhr'>%s</div></img>", "diamond open"),
+                                                        sprintf("<img src='./shapes/triangle open.png' width=30px><div class='jhr'>%s</div></img>", "triangle open"),
+                                                        sprintf("<img src='./shapes/triangle down.png' width=30px><div class='jhr'>%s</div></img>", "triangle down open"),
+                                                        sprintf("<img src='./shapes/cross.png' width=30px><div class='jhr'>%s</div></img>", "cross"),
+                                                        sprintf("<img src='./shapes/circle filled.png' width=30px><div class='jhr'>%s</div></img>", "circle filled"),
+                                                        sprintf("<img src='./shapes/squar filled.png' width=30px><div class='jhr'>%s</div></img>", "square filled"),
+                                                        sprintf("<img src='./shapes/diamond filled.png' width=30px><div class='jhr'>%s</div></img>", "diamond filled"),
+                                                        sprintf("<img src='./shapes/triangle filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle filled"),
+                                                        sprintf("<img src='./shapes/triangle down filled.png' width=30px><div class='jhr'>%s</div></img>", "triangle down filled"),
+                                                        sprintf("<img src='./shapes/asterisk.png' width=30px><div class='jhr'>%s</div></img>", "asterisk"),
+                                                        sprintf("<img src='./shapes/circle cross.png' width=30px><div class='jhr'>%s</div></img>", "circle cross"),
+                                                        sprintf("<img src='./shapes/square cross' width=30px><div class='jhr'>%s</div></img>", "square cross"),
+                                                        sprintf("<img src='./shapes/circle plus.png' width=30px><div class='jhr'>%s</div></img>", "circle plus"),
+                                                        sprintf("<img src='./shapes/square plus.png' width=30px><div class='jhr'>%s</div></img>", "square plus"),
+                                                        sprintf("<img src='./shapes/diamond plus.png' width=30px><div class='jhr'>%s</div></img>", "diamond plus"),
+                                                        sprintf("<img src='./shapes/circle small.png' width=30px><div class='jhr'>%s</div></img>", "circle small"),
+                                                        sprintf("<img src='./shapes/square triangle.png' width=30px><div class='jhr'>%s</div></img>", "square triangle"),
+                                                        sprintf("<img src='./shapes/bullet.png' width=30px><div class='jhr'>%s</div></img>", "bullet")
+                                                        ))
+                          )
+            })
+            #cat(str(BoxPlotColors))
+            do.call(tagList,BoxPlotColors)
+          })
+        }
       }
       if(input$points == FALSE){
-        shinyjs::hide(id = "shape")
+        shinyjs::hide(id = "shapes")
       }
       if(input$plot == "Normal_Distribution"){
         shinyjs::show(id = "vecNorm")
@@ -465,8 +559,8 @@ mod_mod_config_server <- function(id,dataDF,metaData1,metaData2){
         #cat("rowMetaData: ", input$rowMetaData);
 
       }
+      #browser()
 
-     return(input)
   })
   # observeEvent(input$colMetaData,function(){
   #   cat("ObserveEvent colMetaData")
@@ -483,6 +577,7 @@ mod_mod_config_server <- function(id,dataDF,metaData1,metaData2){
   #   }
   # })
   #return(input)
+    return(input)
 })
 }
 

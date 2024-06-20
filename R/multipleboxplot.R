@@ -49,14 +49,18 @@ multipleBoxplots <- function(data, x_var, y_var, add_points = TRUE,color = "RdGy
   #To add boxplots
   if(fill){
     cat("Fill boxplot")
-    plot <- plot + geom_boxplot(aes(y = !!y_var, x = !!x_var, color = !!x_var, fill = !!x_var) , outlier.shape = NA, width = 0.4, lwd = 0.6)#+
+    plot <- plot + geom_boxplot(aes(y = !!y_var, x = !!x_var, color = !!x_var, fill = !!x_var,shape = !!x_var) ,
+                                outlier.shape = NA, width = 0.4, lwd = 0.6)#+
     #scale_fill_manual(values = rep("transparent", nb_factors))
   }else{
     cat("No Fill boxplot")
-    plot <- plot + geom_boxplot(aes(y = !!y_var, x = !!x_var, color = !!x_var) , outlier.shape = NA, width = 0.4, lwd = 0.6)
+    plot <- plot + geom_boxplot(aes(y = !!y_var, x = !!x_var, color = !!x_var,shape = !!x_var) , outlier.shape = NA,
+                                width = 0.4, lwd = 0.6)
   }
   plot <- plot +
-    scale_color_brewer(palette = color) +
+    #scale_color_brewer(palette = color) +
+    scale_fill_manual(values = color) +
+    scale_color_manual( values = color) +
     # #To don't have background color in legend
     guides(fill = "none") +
     # #To change background plot
@@ -64,7 +68,17 @@ multipleBoxplots <- function(data, x_var, y_var, add_points = TRUE,color = "RdGy
 
   if(add_points){
     #To add points on graph
-    plot <- plot + geom_quasirandom(aes(y = !!y_var, x = !!x_var, color = !!x_var), size = 1, alpha = 0.5,shape = shape_chosen)
+    cat("\n Add point")
+    cat(str(shape_chosen),"\n")
+    cat("colorList: ")
+    cat(str(color))
+    #browser()
+     plot <- plot +
+       #scale_shape_manual(values = shape_chosen)+
+       geom_jitter(aes(y = !!y_var, x = !!x_var, color = !!x_var,shape = !!x_var))+
+       scale_shape_manual(values = c(shape_chosen))
+     #geom_quasirandom(aes(y = !!y_var, x = !!x_var, color = !!x_var), size = 1, alpha = 0.5)#shape_chosen)
+    #plot <- plot + geom_jitter(aes(y = !!y_var, x = !!x_var, color = color,shape = c(0)))#scale_shape_manual(values = c(0,1,2,3))
   }
 
   return(plot)

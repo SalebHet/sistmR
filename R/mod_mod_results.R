@@ -10,16 +10,17 @@
 #' @import ggplot2
 #' @import ComplexHeatmap
 #' @import InteractiveComplexHeatmap
+#' @import plotly
 mod_mod_results_ui <- function(id){
   ns <- NS(id)
   tagList(
     tabsetPanel(type = "tabs", id=ns("tabPanel"),
                 tabPanel("Data",shinycssloaders::withSpinner(DT::dataTableOutput(ns("data")))),
-                tabPanel("Metadata1",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta1tab")))),
-                tabPanel("Metadata2",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta2tab")))),
+                #tabPanel("Metadata1",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta1tab")))),
+                #tabPanel("Metadata2",shinycssloaders::withSpinner(DT::dataTableOutput(ns("meta2tab")))),
                 tabPanel("Graph",
                          div(id = ns("plotBox"),shinycssloaders::withSpinner(
-                          plotOutput(ns("result")))
+                          plotlyOutput(ns("result")))
                          ),
                         DT::dataTableOutput(ns("tableResult")),
                           #htmlOutput(ns("hmOut")),
@@ -83,24 +84,48 @@ mod_mod_results_server <- function(id,dataDF,parent,metaData1,metaData2){
         }
       }
       if(parent$plot == "MultipleBoxPlots"){
-        if(parent$color == "" | parent$fill == "" | parent$shape == "" | parent$var1Box == "" |
+        #browser()
+        if( parent$fill == "" | parent$var1Box == "" | #parent$color == "" |
            parent$var2Box == "" | parent$points == ""){
           showModal(modalDialog(
             title = "Information",
             "Please select columns for parameters and colors"
           ))
         }else{
-          cat("color: ")
-          cat(parent$color,"\n")
+          listRowClass <<- unique(dataDF[,parent$var1Box])
+          listCol <- c()
+          for (x in 1:length(listRowClass)) {
+            #browser()
+            cat(paste("\n color of ",listRowClass[x]))
+            cat(parent[[paste0("color",listRowClass[x])]])
+            #newColor <- list(input[[paste0("color",listRowClass[x])]])
+            #browser()
+            listCol <- c(listCol,parent[[paste0("color",listRowClass[x])]])
+          }
+          listShape <- c()
+          for (x in 1:length(listRowClass)) {
+            #browser()
+            cat(paste("\n shape of ",listRowClass[x]))
+            cat(parent[[paste0("shape",listRowClass[x])]])
+            #newColor <- list(input[[paste0("color",listRowClass[x])]])
+            #browser()
+            listShape <- c(listShape,as_string(parent[[paste0("shape",listRowClass[x])]]))
+          }
+          #cat("color: ")
+          #cat(parent$color,"\n")
           cat("fill: ")
           cat(parent$fill,"\n")
           cat("shape: ")
-          cat(parent$shape,"\n")
+          cat(listShape,"\n")
           dataDF[,parent$var1Box] <<- factor(dataDF[,parent$var1Box],unique(dataDF[,parent$var1Box]))
-          plotRes <<- multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),parent$points,parent$color,fill = parent$fill, shape_chosen = parent$shape)
-          output$result <- renderPlot(plotRes +
-                                        ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
-                                        ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
+          plotRes <<- multipleBoxplots(dataDF,dataDF[,parent$var1Box],unlist(dataDF[parent$var2Box]),
+                                       parent$points,listCol,fill = parent$fill, shape_chosen = listShape)
+          # output$result <- renderPlot(plotRes +
+          #                               ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
+          #                               ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))
+          output$result <- renderPlotly({ggplotly(plotRes+
+                                                    ggplot2::labs(x = parent$var1Box,y = parent$var2Box)+
+                                                    ggplot2::guides(colour = ggplot2::guide_legend(parent$var1Box)))})
           shinyjs::show(id = "downloadPlot")
         }
       }
@@ -196,7 +221,8 @@ mod_mod_results_server <- function(id,dataDF,parent,metaData1,metaData2){
           cat("Full Clustering")
           plotRes <<- ComplexHeatmap::Heatmap(dataDF)
         }
-        output$result <- renderPlot(plotRes)
+        browser()
+        output$result <- renderPlotly({ggplotly(plotRes)})
         # data(rand_mat) # simply a random matrix
         # ht1 = Heatmap(rand_mat, name = "mat",
         #              show_row_names = FALSE, show_column_names = FALSE)

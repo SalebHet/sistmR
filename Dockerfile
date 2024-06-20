@@ -39,6 +39,7 @@ RUN R -e 'install.packages("BiocManager")'
 RUN R -e 'BiocManager::install("ComplexHeatmap")'
 RUN R -e 'BiocManager::install("InteractiveComplexHeatmap")'
 RUN R -e 'install.packages("shinyalert")'
+RUN R -e 'remotes::install_cran("plotly")'
 #RUN mkdir /build_zone
 #ADD . /build_zone
 #WORKDIR /build_zone
