@@ -28,6 +28,7 @@ app_server <- function(input, output, session) {
       type <- query[['type']]
       meta1 <<- query[['meta1']]
       meta2 <<- query[['meta2']]
+      assayType <<- query[['assayType']]
       cat("meta1: ",meta1)
       cat("meta2: ",meta2)
 
@@ -38,7 +39,7 @@ app_server <- function(input, output, session) {
           baseUrl="https://labk.bph.u-bordeaux.fr",
           #folderPath="/EBOVAC/assays/EBL2001/ICS",
           folderPath=subF,  #"/VASI/VICI/SISTM",
-          schemaName=paste0("assay.General.",assay),#"assay.General.Vici_Sistm",
+          schemaName=paste0("assay.",assayType,".",assay),#"assay.General.Vici_Sistm",
           queryName="Data",
           viewName="",
           colSort="",
